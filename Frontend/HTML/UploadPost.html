@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Recipe</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            background-color: white;
+            color: black;
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        /* Transparent header styling */
+        header {
+            border-bottom: 1px solid gainsboro;
+            box-shadow: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: transparent;
+            color: inherit; /* Inherits color based on the mode */
+        }
+
+        /* Transparent styling for all future elements */
+        .transparent {
+            background-color: transparent;
+        }
+
+        /* Logo styling */
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Menu styling */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: inherit; /* Inherit color based on mode */
+            font-size: 16px;
+            padding: 8px 12px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: orange;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+
+        }
+
+        /* Login button styling */
+        .login-btn {
+            padding: 8px 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: darkorange;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-btn {
+            padding: 8px 16px;
+            background-color: grey;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .dark-mode-btn:hover {
+            background-color: darkgray;
+        }
+
+
+        .post-container {
+
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(245, 129, 6, 0.5);
+            color: rgb(240, 124, 0);
+        }
+
+        .post-heading {
+            text-align: center;
+            font-size: 70px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .add-button,
+        .remove-button {
+            cursor: pointer;
+            margin-left: 10px;
+            color: #007bff;
+
+        }
+        .btn{
+            
+            font-size: large;
+            font-weight: 700;
+            background-color: #f07c00;
+            border: none;
+
+
+        }
+
+        .remove-button {
+            color: white;
+            background-color: red;
+        }
+        .remove-button:hover{
+            background-color: #f07c00;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #errorMessage,
+        #successMessage {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #errorMessage {
+            color: red;
+        }
+
+        #successMessage {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    
+     <!-- Header Section -->
+     <header>
+        <!-- Logo -->
+        <div class="logo">
+            <img src="../images/logo.png" alt="Logo">
+        </div>
+
+        <!-- Menu -->
+        <nav>
+            <a href="AfterLogin.html">Home</a>
+            <a href="UploadPost.html" class="active">Post</a>
+            <a href="profilepageFinal.html">Profile</a>
+            <a href="searchItem.html">Find Recipe</a>
+            <a href="savepost.html">Save Post</a>
+        </nav>
+
+        <!-- Login/Logout Button and Dark Mode Toggle -->
+        <div class="auth">
+            <button id="authButton" class="login-btn">Logout</button>
+            <button id="darkModeButton" class="dark-mode-btn">Dark Mode</button>
+        </div>
+    </header>
+    
+
+    <div class="post-container container">
+
+        
+        
+
+
+        <h2 class="post-heading">Create Your Recipe Post</h2>
+
+        <form id="recipeForm">
+            <!-- Item Name -->
+            <div class="form-group col-12">
+                <label for="itemName">Recipe Name</label>
+                <input type="text" class="form-control" id="itemName" name="itemName" placeholder="Dishe Name" required>
+            </div>
+
+            <!-- Ingredients (Dynamic List) -->
+            <div class="form-group col-12">
+                <label>Ingredients</label>
+                <div id="ingredientList">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" name="ingredients" placeholder="Enter ingredient">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger remove-button" type="button">-</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary" id="addIngredient">Add Ingredient</button>
+            </div>
+
+            <!-- Steps (Dynamic List) -->
+            <div class="form-group col-12">
+                <label>Steps</label>
+                <div id="stepList">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" name="steps" placeholder="Enter step">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger remove-button" type="button">-</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary" id="addStep">Add Step</button>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group col-12">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+
+            <!-- Category (Veg/Non-Veg) -->
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label for="category">Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        <option value="veg">Veg</option>
+                        <option value="non-veg">Non-Veg</option>
+                    </select>
+                </div>
+
+                <!-- Type (Breakfast, Lunch, etc.) -->
+                <div class="form-group col-6">
+                    <label for="type">Type</label>
+                    <select class="form-control" id="type" name="type" required>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snacks">Snacks</option>
+                        <option value="TestTime">TestTime</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label for="category">Preparation Time </label>
+                    <input type="number" class="form-control" name="PreparationTime" id="PreparationTime" placeholder="Waiting peried" required>
+                </div>
+
+                <!-- Type (Breakfast, Lunch, etc.) -->
+                <div class="form-group col-6">
+                    <label for="category">Calories</label>
+                    <input type="number" class="form-control" name="Calories" id="Calories" placeholder="Health" required>
+                </div>
+            </div>
+
+
+            <!-- Thumbnail -->
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="thumbnail">Thumbnail Image</label>
+                    <input type="file" class="form-control-file" id="thumbnail" name="thumbnail" accept="image/*"
+                        required>
+                </div>
+
+                <!-- Video (Optional) -->
+                <div class="form-group col-6">
+                    <label for="video">Video Tutorial (Optional)</label>
+                    <input type="file" class="form-control-file" id="video" name="video" accept="video/*">
+                </div>
+            </div>
+        
+            <button type="submit" class="btn btn-primary btn-block">Submit Recipe</button>
+
+            <!-- Error and Success Messages -->
+            <div id="errorMessage">Error: Unable to post the recipe.</div>
+            <div id="successMessage">Recipe posted successfully!</div>
+
+            <!-- Loading Spinner -->
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p>Posting recipe...</p>
+            </div>
+        </form>
+
+        <div id="successMessage" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color: rgba(0, 128, 0, 0.7); color: white; padding: 20px; border-radius: 10px; z-index: 1000;">
+            Receipt is posted successfully
+        </div>
+        
+    </div>
+
+    <script>
+
+        window.addEventListener("load", (event) => {
+            if (!(sessionStorage.getItem('userId'))) {
+                window.location.href = 'Login.html';
+            }
+        });
+        const userId = sessionStorage.getItem('userId');
+
+        function showSuccessMessageAndRedirect() {
+    // Get the success message element
+    const successMessage = document.getElementById('successMessage');
+
+    // Display the success message
+    successMessage.style.display = 'block';
+
+    // Set a timeout to hide the message and redirect
+    setTimeout(() => {
+        // Hide the success message
+        successMessage.style.display = 'none';
+        // Redirect to the AfterLogin.html page
+        window.location.href = 'AfterLogin.html';
+    }, 3000); // 3000 milliseconds = 3 seconds
+}
+
+
+        document.getElementById('addIngredient').addEventListener('click', function () {
+            const ingredientList = document.getElementById('ingredientList');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.name = 'ingredients';
+            input.placeholder = 'Enter ingredient';
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'btn btn-outline-danger remove-button';
+            removeButton.textContent = '-';
+            removeButton.type = 'button';
+            removeButton.onclick = function () {
+                ingredientList.removeChild(inputGroup);
+            };
+
+            const inputGroupAppend = document.createElement('div');
+            inputGroupAppend.className = 'input-group-append';
+            inputGroupAppend.appendChild(removeButton);
+
+            inputGroup.appendChild(input);
+            inputGroup.appendChild(inputGroupAppend);
+            ingredientList.appendChild(inputGroup);
+        });
+
+        document.getElementById('addStep').addEventListener('click', function () {
+            const stepList = document.getElementById('stepList');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.name = 'steps';
+            input.placeholder = 'Enter step';
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'btn btn-outline-danger remove-button';
+            removeButton.textContent = '-';
+            removeButton.type = 'button';
+            removeButton.onclick = function () {
+                stepList.removeChild(inputGroup);
+            };
+
+            const inputGroupAppend = document.createElement('div');
+            inputGroupAppend.className = 'input-group-append';
+            inputGroupAppend.appendChild(removeButton);
+
+            inputGroup.appendChild(input);
+            inputGroup.appendChild(inputGroupAppend);
+            stepList.appendChild(inputGroup);
+        });
+
+        document.getElementById('recipeForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Show loading spinner
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('successMessage').style.display = 'none';
+    document.querySelector('.loading').style.display = 'block';
+
+    // Get userId from sessionStorage
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) {
+        alert("User not logged in. Please login first.");
+        return;
+    }
+
+    const itemName = document.getElementById('itemName').value;
+    const description = document.getElementById('description').value;
+    const category = document.getElementById('category').value;
+    const type = document.getElementById('type').value;
+
+    const PreparationTime = document.getElementById('PreparationTime').value;
+    const Calories = document.getElementById('Calories').value;
+
+    const ingredients = Array.from(document.getElementsByName('ingredients'))
+        .map(input => input.value.trim().replace(/,/g, '')) // Remove commas
+        .filter(ingredient => ingredient);
+
+    const steps = Array.from(document.getElementsByName('steps'))
+        .map(input => input.value.trim().replace(/,/g, '')) // Remove commas
+        .filter(step => step);
+    console.log("Lenght" + steps.length)
+
+    const thumbnail = document.getElementById('thumbnail').files[0];
+    const video = document.getElementById('video').files[0];
+
+    const formData = new FormData();
+    formData.append('itemName', itemName);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('type', type);
+    formData.append('ingredients', JSON.stringify(ingredients)); // Safely serialize as JSON
+    formData.append('steps', JSON.stringify(steps)); // Safely serialize as JSON
+    formData.append('thumbnail', thumbnail);
+    formData.append('preparationTime', PreparationTime);
+    formData.append('calories', Calories);
+
+    if (video) formData.append('video', video);
+
+    // Submit form data via fetch
+    fetch(`http://localhost:8080/api/recipes/create/${userId}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector('.loading').style.display = 'none';
+        if (data === "Recipe post created successfully!") {
+            document.getElementById('successMessage').style.display = 'block';
+        } else {
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        document.querySelector('.loading').style.display = 'none';
+        document.getElementById('errorMessage').style.display = 'block';
+        console.error('Error:', error);
+    });
+
+    showSuccessMessageAndRedirect();
+});
+
+    </script>
+
+</body>
+
+</html>

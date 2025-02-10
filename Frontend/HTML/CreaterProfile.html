@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            
+        }
+        header {
+            border-bottom: 1px solid gainsboro;
+            box-shadow: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: transparent;
+            color: inherit; /* Inherits color based on the mode */
+        }
+        .transparent {
+            background-color: transparent;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Menu styling */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: inherit; /* Inherit color based on mode */
+            font-size: 16px;
+            padding: 8px 12px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: orange;
+            color: white;
+            border-radius: 4px;
+        }
+
+        /* Login button styling */
+        .login-btn {
+            padding: 8px 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: darkorange;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-btn {
+            padding: 8px 16px;
+            background-color: grey;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .dark-mode-btn:hover {
+            background-color: darkgray;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+            background-color: #1a1a1a; /* Slightly lighter than black */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .username, .bio {
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        .username-input, .bio-input {
+            display: none;
+            margin-bottom: 20px;
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: #fff;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .stat h3 {
+            font-size: 1.5rem;
+            color: #ff5722; /* Orange theme color */
+            text-align: center;
+        }
+
+        .stat p {
+            font-size: 1rem;
+            color: #ccc;
+        
+        }
+
+        .button-container {
+            display: flex;
+            justify-content:center;
+
+            width: 100%;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff5722;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 48%; /* To allow two buttons to fit in a row */
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #e64a19;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .divider{
+            height: 20Px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ff5722;
+            font-weight: 700;
+            font-size: 30px;
+            margin-bottom: -20px;
+            margin-top: 20px;
+            text-shadow: 0px 0px 10px #e64a19;
+        }
+
+        .recipe-container {
+            width: 90%;
+            margin: 40px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* Recipe card styling */
+        .recipe-card {
+            position: relative; /* Make position relative to position the button */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Recipe card hover effect */
+        .recipe-card:hover {
+            transform: scale(1.05); /* Slight hover zoom effect */
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Image inside recipe card */
+        .recipe-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Recipe name styling */
+        .recipe-card h3 {
+            font-size: 18px;
+            margin: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #ff5722;
+            text-align: center;
+        }
+
+        .save-button {
+            position: absolute; /* Position the button absolutely */
+            top: 10px; /* Position from the top */
+            left: 10px; /* Position from the left */
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+            border: 1px solid black; /* Remove default border */
+            border-radius: 50%;
+            cursor: pointer; /* Pointer cursor on hover */
+            z-index: 10; /* High z-index to place it above the image */
+            font-size: 30px; /* Size of the icon */
+            color: #ff5722; /* Icon color */
+            transition:  0.5s; /* Smooth color change */
+        }
+
+        .save-button:hover {
+             /* Darker shade on hover */
+             transform: scale(1.3);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Logo -->
+        <div class="logo">
+            <img src="../images/logo.png" alt="Logo">
+        </div>
+
+        <!-- Menu -->
+        <nav>
+            <a href="AfterLogin.html">Home</a>
+            <a href="UploadPost.html">Post</a>
+            <a href="profilepageFinal.html">Profile</a>
+            <a href="searchItem.html">Find Recipe</a>
+            <a href="savepost.html">Save Post</a>
+        </nav>
+
+        <!-- Login/Logout Button and Dark Mode Toggle -->
+        <div class="auth">
+            <button id="authButton" class="login-btn">Logout</button>
+            <button id="darkModeButton" class="dark-mode-btn">Dark Mode</button>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-image">
+            <img src="default-profile.jpg" alt="Profile Picture">
+        </div>
+        <div class="username" id="username">Loading...</div>
+        <input type="text" class="username-input" id="username-input" placeholder="Update your name">
+
+        <div class="bio" id="bio">Fetching bio...</div>
+        <input type="text" class="bio-input" id="bio-input" placeholder="Update your bio">
+
+        <div class="stats">
+            <div class="stat">
+                <h3 id="posts-count">0</h3>
+                <p>Posts</p>
+            </div>
+            <div class="stat">
+                <h3 id="followers-count">0</h3>
+                <p>Followers</p>
+            </div>
+            <div class="stat">
+                <h3 id="following-count">0</h3>
+                <p>Following</p>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="button" id="edit-profile-btn">Follow</button>
+        </div>
+        
+</div>
+    <div class="divider">Posts</div>
+    <div class="recipe-container" id="recipeContainer">
+        <!-- Recipe cards will be dynamically inserted here -->
+    </div>
+    <!-- No Results Message -->
+    <div id="noResultsMessage" style="display: none; text-align: center; color: red;">No Recipes Post found!</div>
+    <script>
+         window.addEventListener("load", (event) => {
+            if (!(sessionStorage.getItem('userId'))) {
+                window.location.href = 'Login.html';
+            }
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const createrId = urlParams.get('userId');
+        const userId = sessionStorage.getItem('userId');
+        console.log("this is user id" + userId)
+
+        // Function to fetch the profile image
+        async function fetchImage(imgName) {
+            const response = await fetch(`http://localhost:8080/api/images/get-image/${imgName}`);
+            if (response.ok) {
+                const imageData = await response.blob();
+                return URL.createObjectURL(imageData);
+            } else {
+                console.error('Failed to fetch image:', response.statusText);
+                return 'default-profile.jpg';
+            }
+        }
+
+        // Fetch user profile data
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch(`http://localhost:8080/api/user/get-profile-by-id/${createrId}`);
+                const data = await response.json();
+
+                document.querySelector('.profile-image img').src = await fetchImage(data.profilePic || "default-profile");
+                document.getElementById('username').textContent = data.name || 'No Name';
+                document.getElementById('bio').textContent = data.bio || 'No bio available';
+                document.getElementById('posts-count').textContent = data.nmbrofPost || '0';
+                document.getElementById('followers-count').textContent = data.numberoffollower || '0';
+                document.getElementById('following-count').textContent = data.numberoffollowing || '0';
+
+                document.getElementById('username-input').value = data.name || '';
+                document.getElementById('bio-input').value = data.bio || '';
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        }
+
+        // Fetch user profile on page load
+        fetchUserProfile();
+
+        async function fetchRecipes() {
+            const response = await fetch(`http://localhost:8080/api/recipes/get/all/${createrId}`);
+            return await response.json();
+        }
+
+        async function fetchImage(imgName) {
+            const response = await fetch(`http://localhost:8080/api/images/get-image/${imgName}`);
+            if (response.ok) {
+                const imageData = await response.blob(); // Get image as Blob
+                return URL.createObjectURL(imageData); // Create a URL for the image
+            } else {
+                console.error('Failed to fetch image:', response.statusText);
+                return 'path/to/default/image.jpg'; // Provide a default image if fetching fails
+            }
+        }
+
+        async function displayRecipes() {
+            const recipes = await fetchRecipes();
+            const recipeCardContainer = document.getElementById('recipeContainer'); // Fixed ID reference
+            recipeCardContainer.innerHTML = ''; // Clear previous results
+
+            if (recipes.length === 0) {
+                document.getElementById('noResultsMessage').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('noResultsMessage').style.display = 'none';
+
+            for (const recipe of recipes) {
+    const imgUrl = await fetchImage(recipe.thumbnel); // Fetch image using thumbnail name
+
+    // Create a link element for the recipe card
+    const linkElement = document.createElement('a');
+    
+    linkElement.href = `ViewPostPage.html?postId=${recipe.id}`;  // URL with postId as query parameter
+    linkElement.className = 'recipe-link'; // Optional: Add a class for styling
+    linkElement.style.textDecoration = 'none'; // Remove underline from the link (optional)
+    linkElement.style.color = 'inherit'; // Inherit color from parent (optional)
+
+    // Create the recipe card container
+    const recipeCard = document.createElement('div');
+    recipeCard.className = 'recipe-card';
+
+    // Create a string for ingredients
+    const ingredientsList = recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+
+    recipeCard.innerHTML = `
+        <img src="${imgUrl}" alt="${recipe.name}">
+        <h3 style="text-decoration: none;" >${recipe.name}</h3>
+    `;
+
+    // Append the recipe card to the link element
+    linkElement.appendChild(recipeCard);
+
+    // Finally, append the link element to the recipeCardContainer
+    recipeCardContainer.appendChild(linkElement);
+}
+        }
+        // Assuming followerId and followingId are available in your code
+const followerId = userId;  
+const followingId = createrId; 
+
+document.getElementById('edit-profile-btn').addEventListener('click', function() {
+    const button = this;
+    const url = `http://localhost:8080/api/follow/toggle?followerId=${followerId}&followingId=${followingId}`;
+    
+    fetch(url, {
+        method: 'POST', // Assuming the API expects a POST request
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Toggle button text based on its current state
+            if (button.innerText === 'Follow') {
+                button.innerText = 'Unfollow';
+            } else {
+                button.innerText = 'Follow';
+            }
+            console.log('Follow status toggled successfully');
+        } else {
+            console.error('Error toggling follow status');
+        }
+
+        location.reload();
+    })
+    .catch(error => console.error('Error:', error));
+});
+        displayRecipes();
+
+        const authButton = document.getElementById('authButton');
+        authButton.onclick = function () {
+                    sessionStorage.removeItem('userId');
+                    window.location.href = 'Login.html';
+                };
+
+                document.addEventListener('DOMContentLoaded', function() {
+            // Replace with actual user IDs
+           
+
+            // Fetch the follow status from the API
+            fetch(`http://localhost:8080/api/follow/check/follow?followerId=${followerId}&followingId=${followingId}`)
+                .then(response => response.json())
+                .then(isFollowing => {
+                    // Get the button element
+                    const followButton = document.getElementById('edit-profile-btn');
+
+                    // Check if the user is following or not
+                    if (isFollowing) {
+                        followButton.textContent = 'Unfollow';
+                    } else {
+                        followButton.textContent = 'Follow';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching follow status:', error);
+                });
+        });
+                
+
+    </script>
+</body>
+</html>
+

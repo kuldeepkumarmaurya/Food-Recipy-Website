@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .hero{
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Transparent header styling */
+
+        header {
+            border-bottom: 1px solid gainsboro;
+            box-shadow: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: transparent;
+            color: inherit;
+            /* Inherits color based on the mode */
+        }
+
+        /* Transparent styling for all future elements */
+        .transparent {
+            background-color: transparent;
+        }
+
+        /* Logo styling */
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Menu styling */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: inherit;
+            /* Inherit color based on mode */
+            font-size: 16px;
+            padding: 8px 12px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background-color: orange;
+            color: white;
+            border-radius: 4px;
+        }
+
+        /* Login button styling */
+        .login-btn {
+            padding: 8px 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: darkorange;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-btn {
+            padding: 8px 16px;
+            background-color: grey;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .dark-mode-btn:hover {
+            background-color: darkgray;
+        }
+
+        h1 {
+            color: #ff5722;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ff5722;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .search-container input[type="text"]:focus {
+            outline: none;
+            border-color: #ff9800;
+            /* Change border color on focus */
+        }
+
+        .search-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .toggle-input {
+            padding: 10px;
+            border: 2px solid #ff5722;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+            transition: border 0.3s;
+        }
+
+        .toggle-input:focus {
+            outline: none;
+            border-color: #ff9800;
+            /* Change border color on focus */
+        }
+
+        /* Styling for the Search Button */
+        #searchButton {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-left: 10px;
+            /* Add space between the select box and the button */
+        }
+
+        #searchButton:hover {
+            background-color: #ff9800;
+            /* Lighter orange on hover */
+            transform: scale(1.05);
+            /* Slightly scale up on hover */
+        }
+
+        .recipe-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .recipe-card {
+            position: relative; /* Make position relative to position the button */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            text-decoration: none;
+            color: #000;
+
+        }
+
+        /* Recipe card hover effect */
+        .recipe-card:hover {
+            transform: scale(1.05); /* Slight hover zoom effect */
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Image inside recipe card */
+        .recipe-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Recipe name styling */
+        .recipe-card h3 {
+            text-align: center;
+            font-size: 18px;
+            margin: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #ff5722;
+        }
+
+        .no-results {
+            width: 100%;
+            text-align: center;
+            color: #ff5722;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <!-- Logo -->
+        <div class="logo">
+            <img src="../images/logo.png" alt="Logo">
+        </div>
+
+        <!-- Menu -->
+        <nav>
+            <a href="AfterLogin.html">Home</a>
+            <a href="UploadPost.html">Post</a>
+            <a href="profilepageFinal.html">Profile</a>
+            <a href="searchItem.html" class="active">Find Recipe</a>
+            <a href="savepost.html" >Save Post</a>
+        </nav>
+
+        <!-- Login/Logout Button and Dark Mode Toggle -->
+        <div class="auth">
+            <button id="authButton" class="login-btn">Logout</button>
+            <button id="darkModeButton" class="dark-mode-btn">Dark Mode</button>
+        </div>
+    </header>
+    <div class="hero">
+
+
+        <h1>Recipe Collection</h1>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search recipes..." />
+            <div class="search-toggle">
+                <label class="toggle-label">Search by:</label>
+                <select id="searchType" class="toggle-input">
+                    <option value="name">Name</option>
+                    <option value="ingredient">Ingredient</option>
+                </select>
+            </div>
+            <button id="searchButton">Search</button>
+        </div>
+
+        <div class="recipe-card-container" id="recipeCardContainer">
+            <!-- Recipe cards will be generated here -->
+        </div>
+
+        <div class="no-results" id="noResultsMessage" style="display: none;">No results found!</div>
+    </div>
+
+    <script>
+        // Call displayRecipes when the page loads
+        window.addEventListener("load", (event) => {
+            if (!(sessionStorage.getItem('userId'))) {
+                window.location.href = 'Login.html';
+            }
+        });
+
+        // Logout Button
+        const authButton = document.getElementById('authButton');
+        authButton.onclick = function () {
+            sessionStorage.removeItem('userId');
+            window.location.href = 'Login.html';
+        };
+
+        async function fetchRecipes() {
+            const response = await fetch("http://localhost:8080/api/recipes/get/all");
+            return await response.json();
+        }
+
+        async function fetchImage(imgName) {
+            const response = await fetch(`http://localhost:8080/api/images/get-image/${imgName}`);
+            return response.url; // Assuming the image URL is in the response
+        }
+
+        async function getImageUrl(imgName) {
+            const imgUrl1 = await fetchImage(imgName);
+            return imgUrl1;
+        }
+
+        async function displayRecipes() {
+            const recipes = await fetchRecipes();
+            const recipeCardContainer = document.getElementById('recipeCardContainer');
+            recipeCardContainer.innerHTML = ''; // Clear previous results
+
+            if (recipes.length === 0) {
+                document.getElementById('noResultsMessage').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('noResultsMessage').style.display = 'none';
+
+            for (const recipe of recipes) {
+        const imgUrl = await fetchImage(recipe.thumbnel);
+        
+        // Create the link element
+        const linkElement = document.createElement('a');
+        linkElement.href = `ViewPostPage.html?postId=${recipe.id}`; // URL with postId as query parameter
+        linkElement.className = 'recipe-card'; // Optional: Add a class for styling
+        linkElement.style.textDecoration = 'none'; // Remove underline from the link (optional)
+        linkElement.style.color = 'inherit'; // Inherit color from parent (optional)
+
+        // Create the recipe card
+        const recipeCard = document.createElement('div');
+        recipeCard.className = 'recipe-card';
+        recipeCard.innerHTML = `
+            <img src="${imgUrl}" alt="${recipe.name}">
+            <h3>${recipe.name}</h3>
+        `;
+
+        // Append the recipe card to the link element
+        linkElement.appendChild(recipeCard);
+        
+        // Append the link element to the container
+        recipeCardContainer.appendChild(linkElement);
+    }
+        }
+
+        document.getElementById('searchButton').addEventListener('click', async () => {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const searchType = document.getElementById('searchType').value;
+            const recipes = await fetchRecipes();
+
+            const filteredRecipes = recipes.filter(recipe => {
+                if (searchType === 'name') {
+                    return recipe.name.toLowerCase().includes(searchInput);
+                } else if (searchType === 'ingredient') {
+                    return recipe.ingredients.some(ingredient => ingredient.toLowerCase().includes(searchInput));
+                }
+            });
+
+            displayFilteredRecipes(filteredRecipes);
+        });
+
+async function displayFilteredRecipes(filteredRecipes) {
+    const recipes = filteredRecipes;
+    const recipeCardContainer = document.getElementById('recipeCardContainer');
+    recipeCardContainer.innerHTML = ''; // Clear previous results
+
+    if (recipes.length === 0) {
+        document.getElementById('noResultsMessage').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('noResultsMessage').style.display = 'none';
+
+    for (const recipe of recipes) {
+        const imgUrl = await fetchImage(recipe.thumbnel);
+        
+        // Create the link element
+        const linkElement = document.createElement('a');
+        linkElement.href = `ViewPostPage.html?postId=${recipe.id}`; // URL with postId as query parameter
+        linkElement.className = 'recipe-link'; // Optional: Add a class for styling
+        linkElement.style.textDecoration = 'none'; // Remove underline from the link (optional)
+        linkElement.style.color = 'inherit'; // Inherit color from parent (optional)
+
+        // Create the recipe card
+        const recipeCard = document.createElement('div');
+        recipeCard.className = 'recipe-card';
+        recipeCard.innerHTML = `
+            <img src="${imgUrl}" alt="${recipe.name}">
+            <h3>${recipe.name}</h3>
+        `;
+
+        // Append the recipe card to the link element
+        linkElement.appendChild(recipeCard);
+        
+        // Append the link element to the container
+        recipeCardContainer.appendChild(linkElement);
+    }
+}
+        // Initially display all recipes
+        displayRecipes();
+
+    </script>
+
+</body>
+
+</html>

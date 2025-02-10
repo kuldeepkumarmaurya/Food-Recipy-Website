@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Recipe</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center everything */
+            padding: 20px;
+        }
+
+        .recipe-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 20px; /* Add space between this and the new section */
+        }
+
+        .recipe-image {
+            width: 50%;
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .recipe-image img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .recipe-content {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        h1 {
+            color: #f07c00;
+            font-size: 2rem;
+        }
+
+        .recipe-meta {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .recipe-meta div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #f07c00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .ingredients-list {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        .ingredients-list h2 {
+            color: #f07c00;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .ingredients-list ul {
+            list-style-type: square;
+        }
+
+        .ingredients-list ul li {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f07c00;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .button:hover {
+            background-color: #ff5722;
+        }
+
+        .read-more {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .read-more-btn {
+            color: #f07c00;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* New section for ingredients and steps */
+        .ingredients-steps-container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .ingredients-steps-container h2 {
+            color: #f07c00;
+            margin-bottom: 10px;
+        }
+
+        .ingredient-list {
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .step-list {
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .step-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .step-list li.strikethrough {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .step-list input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #f07c00;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .comment-form {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .comment-form textarea, .comment-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .comment-form button {
+            background-color: #f07c00;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .comment-section {
+            width: 100%;
+            border-top: 2px solid #f07c00;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .comment {
+            background-color: #f9f9f9;
+            border: 1px solid #f07c00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .comment-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .comment-user {
+            font-size: 14px;
+            color: #f07c00;
+            font-weight: bold;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        #description{
+            width: 100%;
+            /* border: 1px solid black; */
+            height: 80px;
+            margin-bottom: -10px;
+            text-align: justify;
+            font-size: 1rem;
+            font-weight: 300;
+            overflow-y: scroll;
+        }
+        #likeIcon{
+            border: 1px solid white;
+        }
+
+        .profilDetail {
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #e1e1e1; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    width: 81%; /* Max width for the profile detail */
+    text-align: center; /* Center text inside */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+}
+
+.createrName {
+    font-size: 34px; /* Larger font for the name */
+    font-weight: bold; /* Bold text */
+    color: #f07c00; /* Dark gray color for text */
+}
+
+.profilebutton {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center buttons */
+    gap: 50px; /* Space between buttons */
+}
+
+button {
+    background-color: #f07c00; /* Blue button background */
+    color: white; /* White text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded button corners */
+    padding: 10px 25px; /* Padding inside buttons */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #ff5722; /* Darker blue on hover */
+}
+
+button:focus {
+    outline: none; /* Remove default focus outline */
+}
+    </style>
+</head>
+<body>
+    
+    <div class="recipe-container">
+        <div class="recipe-image">
+            <img id="thumbnail" src="../images/searchBg.jpg" alt="Recipe Thumbnail">
+        </div>
+        <div class="recipe-content">
+            <h1 id="recipeName">Honey Roasted Peanut Butter</h1>
+            <div class="recipe-meta">
+                <div>
+                    <div class="circle" id="Postlikecount">4</div>
+                    <p>Likes</p>
+                </div>
+                <div>
+                    <div class="circle" id="preparationTime">20 min</div>
+                    <p>Preparation Time</p>
+                </div>
+                <div>
+                    <div class="circle" id="calories">2474</div>
+                    <p>Calories</p>
+                </div>
+            </div>
+            <div class="ingredients-list">
+                <h2>Description</h2>
+                <div id="description">
+                </div>
+                <!-- <span class="read-more-btn" id="readMoreBtn">Read More</span> -->
+            </div>
+            <div class="button-container">
+                <button class="button" id="videoLink">Video Tutorial Link</button>
+                <button class="button" onclick="toggleLike()"  id="likeButton">
+                    <!-- <box-icon name='like'  id="likeIcon"></box-icon> -->
+                    <box-icon name='like'  id="likeIcon" color="#FFFFFF" ></box-icon>
+                </button>                
+                <button class="button" onclick="saveRecipe()">
+                    <box-icon name="bookmark" id="savebutton"></box-icon>
+                </button>
+                            </div>
+        </div>
+    </div>
+
+    <div class="profilDetail">
+        <div class="createrName">Creater Profile</div>
+        <div class="profilebutton">
+            <button class="followBtn">Follow</button>
+            <button class="viewProfileBtn">View Profile</button>
+        </div>
+    </div>
+    
+    <!-- New section for Ingredients and Steps -->
+    <div class="ingredients-steps-container">
+        <h2>Ingredients</h2>
+        <p class="ingredient-list" id="ingredients">Peanuts, Honey, Salt, Oil</p>
+    
+        <h2>Steps</h2>
+        <ul class="step-list" id="steps">
+            <li><input type="radio" onclick="toggleStep(this)">Roast peanuts until golden brown.</li>
+            <li><input type="radio" onclick="toggleStep(this)">Mix honey, salt, and oil together.</li>
+            <li><input type="radio" onclick="toggleStep(this)">Blend peanuts into a smooth paste.</li>
+            <li><input type="radio" onclick="toggleStep(this)">Mix peanut paste with the honey mixture.</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <h2>Comments on Post</h2>
+    
+        <!-- Leave a Comment Form -->
+        <div class="comment-form">
+            <textarea id="commentText" placeholder="Write your comment here..." rows="4"></textarea>
+            <input type="text" id="userName" style="display: none;" placeholder="Enter your name">
+            <button onclick="submitComment()">Leave a Comment</button>
+        </div>
+    
+        <!-- Comments Section -->
+        <div class="comment-section" id="commentSection">
+            <!-- Comments will be dynamically injected here -->
+        </div>
+    </div>
+
+    <script>
+window.addEventListener("load", (event) => {
+            if (!(sessionStorage.getItem('userId'))) {
+                window.location.href = 'Login.html';
+            }
+        });
+        var createrId = 0;
+
+async function fetchImage(imgName) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/images/get-image/${imgName}`);
+        if (response.ok) {
+            const imageData = await response.blob(); // Get image as Blob
+            return URL.createObjectURL(imageData); // Return image URL
+        } else {
+            console.error('Failed to fetch image:', response.statusText);
+            return 'path/to/default/image.jpg'; // Fallback image
+        }
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        return 'path/to/default/image.jpg'; // Fallback image
+    }
+}
+
+// Function to extract a query parameter from the URL
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+// Function to set userId and postId variables on page load
+function initializePageVariables() {
+    // Get the postId from the URL
+    const postId = getQueryParam('postId');
+
+    // Get the userId from sessionStorage
+    const userId = sessionStorage.getItem('userId');
+
+    // Check if both postId and userId exist
+    if (postId && userId) {
+        console.log(`User ID: ${userId}, Post ID: ${postId}`);
+        
+        // Use postId and userId in global variables
+        window.userId = userId;
+        window.postId = postId;
+
+        // Call the functions to update recipe details and toggle like status
+        updateRecipeDetails(postId);
+        fetchComments(postId); // Fetch comments when the page loads
+        fetchLikeStatus(); // Fetch the like status on page load
+       fetchLikesCount(postId);
+
+    } else {
+        console.error('Error: postId or userId is missing.');
+        // Handle the case when one of them is missing
+    }
+}
+
+// Function to fetch and update recipe details
+async function updateRecipeDetails(recipyId) {
+    const apiUrl = `http://localhost:8080/api/recipes/get/${recipyId}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch recipe data');
+        }
+
+        const recipeData = await response.json();
+
+        // Set recipe details in HTML
+        document.getElementById('recipeName').textContent = recipeData.itemName;
+        document.getElementById('description').textContent = recipeData.description;
+        document.getElementById('preparationTime').textContent = recipeData.preparationTime ? `${recipeData.preparationTime} min` : 'N/A';
+        document.getElementById('calories').textContent = recipeData.calories ? recipeData.calories : 'N/A';
+        document.getElementById('ingredients').textContent = recipeData.ingredients.join(', ');
+        createrId = recipeData.userId;
+        
+        // Populate steps
+        const stepsElement = document.getElementById('steps');
+        stepsElement.innerHTML = '';  // Clear previous steps
+        recipeData.steps.forEach(step => {
+            if (step.trim() !== "") {
+                const li = document.createElement('li');
+                li.innerHTML = `<input type="radio" onclick="toggleStep(this)"> ${step}`;
+                stepsElement.appendChild(li);
+            }
+        });
+
+        // Fetch and set thumbnail image
+        const thumbnailUrl = await fetchImage(recipeData.thumbnail);
+        document.getElementById('thumbnail').src = thumbnailUrl;
+
+        // Set video tutorial link
+        const videoLinkButton = document.getElementById('videoLink');
+        videoLinkButton.onclick = () => {
+         
+            window.open(`videopp.html?video=${recipeData.videoPath}`, '_blank');
+
+        };
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Toggle like functionality
+async function toggleLike() {
+    console.log(`Calling API to toggle like for userId: ${userId}, postId: ${postId}`);
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/likes/toggle/${userId}/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to toggle like");
+        }
+
+        const data = await response.json();
+        document.getElementById('Postlikecount').textContent = data.likeCount;
+
+        const likeIcon = document.getElementById('likeIcon');
+        if (data.userHasLiked) {
+            alert("Like added!");
+            likeIcon.setAttribute('color', '#FFFFFF');
+            likeIcon.setAttribute('type', 'solid');
+            likeIcon.setAttribute('animation', 'tada');
+        } else {
+            alert("Like removed!");
+            likeIcon.setAttribute('color', '#FFFFFF');
+            likeIcon.removeAttribute('type');
+            likeIcon.removeAttribute('animation');
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Render comments dynamically
+function renderComments(commentData) {
+    const commentSection = document.getElementById('commentSection');
+    
+    if (commentData.length === 0) {
+        commentSection.innerHTML = '<div class="no-comments">No comments yet.</div>';
+        return;
+    }
+
+    commentSection.innerHTML = '';  // Clear previous comments
+
+    commentData.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.classList.add('comment');
+
+        const commentText = document.createElement('div');
+        commentText.classList.add('comment-text');
+        commentText.textContent = comment.commentText;
+
+        const commentUser = document.createElement('div');
+        commentUser.classList.add('comment-user');
+        commentUser.textContent = `Posted by ${comment.userName}`;
+
+        const commentTime = document.createElement('div');
+        commentTime.classList.add('comment-time');
+        commentTime.textContent = comment.timeAgo;
+
+        commentDiv.appendChild(commentText);
+        commentDiv.appendChild(commentUser);
+        commentDiv.appendChild(commentTime);
+
+        commentSection.appendChild(commentDiv);
+    });
+}
+
+// Fetch comments from the API
+async function fetchComments(postId) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/comments/post/${postId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch comments');
+        }
+        const commentData = await response.json();
+        renderComments(commentData);
+    } catch (error) {
+        console.error("Error fetching comments: ", error);
+        const commentSection = document.getElementById('commentSection');
+        commentSection.innerHTML = '<div class="error-message">Failed to load comments.</div>';
+    }
+
+    fetch(`http://localhost:8080/api/likes/getLikeCount/${postId}`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    document.getElementById('Postlikecount').textContent = data;
+    console.log("likes: " + data);
+})
+.catch(error => {
+    document.querySelector('.loading').style.display = 'none';
+    document.getElementById('errorMessage').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('errorMessage').style.display = 'block';
+    console.error('Error:', error);
+});
+}
+
+// Submit a new comment
+async function submitComment() {
+    var commentTextData = document.getElementById("commentText").value;
+
+    if (commentTextData.trim() === "") {
+        alert("Comment cannot be empty!");
+        return;
+    }
+
+    try {
+        // Submit comment via API
+        const response = await fetch(`http://localhost:8080/api/comments/add?postId=${postId}&userId=${userId}&commentText=${encodeURIComponent(commentTextData)}`, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            fetchComments(postId);  // Refresh comments
+            document.getElementById('commentText').value = '';  // Clear comment input
+        } else {
+            alert("Failed to submit the comment");
+        }
+    } catch (error) {
+        console.error("Error submitting comment:", error);
+    }
+}
+
+// Fetch comments on page load
+document.addEventListener('DOMContentLoaded', () => {
+    fetchComments(postId);  // Fetch comments on page load
+});
+
+const viewProfileBtn = document.querySelector('.viewProfileBtn');
+
+    // Add a click event listener to the button
+    viewProfileBtn.addEventListener('click', function() {
+        // Redirect to createProfil.html with user ID as a query parameter
+        window.location.href = `CreaterProfile.html?userId=${createrId}`;
+    });
+
+
+function saveRecipe() {
+
+    const apiUrl = `http://localhost:8080/recipes/save?userId=${userId}&recipeId=${postId}`;
+
+    // Call the API using fetch
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.text())
+.then(data => {
+
+    const saveicon = document.getElementById('savebutton');
+    if(data === "Recipe saved successfully!"){
+        alert(data)
+        saveicon.setAttribute('color', '#FFFFFF');
+        saveicon.setAttribute('type', 'solid');
+        saveicon.setAttribute('animation', 'tada');
+    }else{
+        alert(data)
+        saveicon.setAttribute('color', '#FFFFFF');
+        saveicon.removeAttribute('type');
+        saveicon.removeAttribute('animation');
+    }
+    
+})
+.catch(error => {
+    alert(data)
+    console.error('Error fetching data:', error);
+  });
+}
+
+// Call the function on page load to initialize variables and update content
+window.onload = initializePageVariables;
+
+
+</script>
+</body>
+</html>
+

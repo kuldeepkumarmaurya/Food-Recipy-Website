@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Background image styling */
+        body {
+            background: url('../images/otpverifyBg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Centered OTP input container */
+        .otp-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* White background with transparency */
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        .otp-heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Error and success messages */
+        #errorMessage,
+        #successMessage {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #errorMessage {
+            color: red;
+        }
+
+        #successMessage {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- OTP Input Form Container -->
+    <div class="otp-container">
+        <h2 class="otp-heading">Please Enter OTP</h2>
+
+        <form id="otpForm">
+            <div class="form-group">
+                <label for="otp">Enter 6-digit OTP</label>
+                <input type="text" class="form-control" id="otp" name="otp" pattern="[0-9]{6}" maxlength="6" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Submit OTP</button>
+
+            <!-- Error and success messages -->
+            <div id="errorMessage">Invalid OTP or something went wrong.</div>
+            <div id="successMessage"></div>
+
+            <!-- Loading Spinner -->
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p>Verifying OTP...</p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('otpForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Clear error and success messages, and show loading spinner
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.querySelector('.loading').style.display = 'block';
+
+            // Retrieve email from sessionStorage
+            const email = sessionStorage.getItem('userEmail');
+
+            // Get OTP entered by the user
+            const otp = document.getElementById('otp').value;
+
+            // Make sure OTP is 6 digits
+            if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+                document.querySelector('.loading').style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'Please enter a valid 6-digit OTP.';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            // Make API call to verify the OTP
+            const apiUrl = `http://localhost:8080/api/user/verify-otp?email=${encodeURIComponent(email)}&otp=${otp}`;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+            if (data == "OTP verified. Registration complete!") {
+
+                document.querySelector('.loading').style.display = 'none';
+                document.getElementById('successMessage').textContent = data;
+                window.location.href = 'Login.html';
+
+
+            } else if (data == "Invalid or expired OTP.") {
+                document.querySelector('.loading').style.display = 'none';
+                document.getElementById('successMessage').textContent = data;
+            } else if (data == "User not found.") {
+                document.getElementById('successMessage').textContent = data;
+            } else {
+                document.querySelector('.loading').style.display = 'none';
+                document.getElementById('successMessage').textContent = "Something Went Wrong Please try again.";
+            }
+        })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        })
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Background image styling */
+        body {
+            background: url('../images/loginBg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Centered login input container */
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9); /* White background with transparency */
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        .login-heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Error and success messages */
+        #errorMessage, #successMessage {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #errorMessage {
+            color: red;
+        }
+
+        #successMessage {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Input Form Container -->
+    <div class="login-container">
+        <h2 class="login-heading">Welcome Back</h2>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+            <!-- Error and success messages -->
+            <div id="errorMessage"></div>
+            <div id="registerMessage" style="display: none;">User not found. <b><a href="Registration.html">Please register</a></b>.</div>
+            <div id="newUserMessage">New User. <b><a href="Registration.html">Please register</a></b>.</div>
+            <div id="successMessage">Login successful!</div>
+
+            <!-- Loading Spinner -->
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p>Logging in...</p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Clear error and success messages, and show loading spinner
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('registerMessage').style.display = 'none';
+            document.querySelector('.loading').style.display = 'block';
+
+            // Retrieve email and password entered by the user
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Create request body
+            const requestBody = {
+                email: email,
+                password: password
+            };
+
+            // Make API call to login
+            fetch('http://localhost:8080/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.loading').style.display = 'none';
+
+                if (data.statusCode === 200) {
+                    // Login successful, store userId in sessionStorage
+                    sessionStorage.setItem('userId', data.userId);
+
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    window.location.href = 'AfterLogin.html';
+
+                } else {
+                    // Show error message
+                    if(data.message == "User not found. Please register."){
+                    document.getElementById('registerMessage').style.display = 'block';
+                    }else{
+                        document.getElementById('errorMessage').textContent = data.message;
+                        document.getElementById('errorMessage').style.display = 'block';
+                    }
+                    
+                }
+            })
+            .catch(error => {
+                document.querySelector('.loading').style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'Something went wrong. Please try again.';
+                document.getElementById('errorMessage').style.display = 'block';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+    
+</body>
+</html>

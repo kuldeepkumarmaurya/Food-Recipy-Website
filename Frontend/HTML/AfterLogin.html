@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page with Header and Dark Mode</title>
+     <!-- Include Boxicons CSS -->
+     <link rel="stylesheet" href='https://unpkg.com/boxicons@latest/css/boxicons.min.css'>
+     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            background-color: white;
+            color: black;
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        /* Transparent header styling */
+        header {
+            border-bottom: 1px solid gainsboro;
+            box-shadow: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: transparent;
+            color: inherit; /* Inherits color based on the mode */
+        }
+
+        /* Transparent styling for all future elements */
+        .transparent {
+            background-color: transparent;
+        }
+
+        /* Logo styling */
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Menu styling */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: inherit; /* Inherit color based on mode */
+            font-size: 16px;
+            padding: 8px 12px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: orange;
+            color: white;
+            border-radius: 4px;
+        }
+
+        /* Login button styling */
+        .login-btn {
+            padding: 8px 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: darkorange;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-btn {
+            padding: 8px 16px;
+            background-color: grey;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .dark-mode-btn:hover {
+            background-color: darkgray;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 40vh;
+            background-image: url('../images/searchBg.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Overlay to darken the background slightly */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            z-index: 1;
+        }
+
+        /* Search container */
+        .search-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        /* Text above input field */
+        .search-container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            
+        }
+
+        /* Input field */
+        .search-container input[type="text"] {
+            padding: 10px;
+            width: 400px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-right: -40px;
+        }
+
+        /* Search button */
+        .search-container button {
+            padding: 10px ;
+            background-color: orange;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Magnifying glass icon inside the button */
+        .search-container button:before {
+            content: "\1F50D"; /* Unicode for magnifying glass */
+            margin-right: 5px;
+        }
+
+        /* Text below input field */
+        .search-container p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .menu-bar {
+            width: 90%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+            height: 50px;
+            background-color: #ff9800; /* Orange background for the bar */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Individual menu items */
+        .menu-item {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect on menu items */
+        .menu-item:hover {
+            background-color: #e67e22; /* Darker shade of orange */
+        }
+
+        /* Menu item active state (when selected) */
+        .menu-item.active {
+            background-color: #d35400; /* Even darker shade for active item */
+        }
+
+        .recipe-container {
+            width: 90%;
+            margin: 40px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* Recipe card styling */
+        .recipe-card {
+            position: relative; /* Make position relative to position the button */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            text-decoration: none;
+            color: #000;
+
+        }
+
+        /* Recipe card hover effect */
+        .recipe-card:hover {
+            transform: scale(1.05); /* Slight hover zoom effect */
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Image inside recipe card */
+        .recipe-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* Recipe name styling */
+        .recipe-card h3 {
+            font-size: 18px;
+            margin: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #ff5722;
+            text-align: center;
+
+        }
+
+        /* Save button styling */
+        .save-button {
+            position: absolute; /* Position the button absolutely */
+            top: 10px; /* Position from the top */
+            left: 10px; /* Position from the left */
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+            border: 1px solid black; /* Remove default border */
+            border-radius: 50%;
+            cursor: pointer; /* Pointer cursor on hover */
+            z-index: 10; /* High z-index to place it above the image */
+            font-size: 30px; /* Size of the icon */
+            color: #ff5722; /* Icon color */
+            transition:  0.5s; /* Smooth color change */
+        }
+
+        /* Save button hover effect */
+        .save-button:hover {
+             /* Darker shade on hover */
+             transform: scale(1.3);
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .search-container input[type="text"] {
+                width: 250px;
+            }
+
+            .search-container h1 {
+                font-size: 20px;
+            }
+
+            .search-container p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <!-- Header Section -->
+    <header>
+        <!-- Logo -->
+        <div class="logo">
+            <img src="../images/logo.png" alt="Logo">
+        </div>
+
+        <!-- Menu -->
+        <nav>
+            <a href="AfterLogin.html" class="active">Home</a>
+            <a href="UploadPost.html">Post</a>
+            <a href="profilepageFinal.html">Profile</a>
+            <a href="searchItem.html">Find Recipe</a>
+            <a href="savepost.html">Save Post</a>
+        </nav>
+
+        <!-- Login/Logout Button and Dark Mode Toggle -->
+        <div class="auth">
+            <button id="authButton" class="login-btn">Logout</button>
+            <button id="darkModeButton" class="dark-mode-btn">Dark Mode</button>
+        </div>
+    </header>
+
+    <section class="hero-section" >
+        <div class="search-container">
+            <!-- Text above input field -->
+            <h1>Your desired dish?</h1>
+
+            <!-- Input field and search button -->
+            <input type="text" placeholder="Enter dish name...">
+            <button>Search</button>
+
+            <!-- Text below input field -->
+            <p>Search by food name, e.g., Pakal Panir, Pizza</p>
+        </div>
+    </section>
+    <div class="menu-bar">
+<div class="menu-item active" id="findBreakfast" onclick="changeActive(this); displayRecipes('Breakfast')">Breakfast</div>
+<div class="menu-item" id="findLunch" onclick="changeActive(this); displayRecipes('Lunch')">Lunch</div>
+<div class="menu-item" id="findDinner" onclick="changeActive(this); displayRecipes('Dinner')">Dinner</div>
+<div class="menu-item" id="findSnacks" onclick="changeActive(this); displayRecipes('Snacks')">Snacks</div>
+<div class="menu-item" id="findTestTime" onclick="changeActive(this); displayRecipes('TestTime')">TestTime</div>
+
+        
+
+    </div>
+       <!-- Recipe Container -->
+    <div class="recipe-container" id="recipeContainer">
+        <!-- Recipe cards will be dynamically inserted here -->
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResultsMessage" style="display: none; text-align: center; color: red;">No recipes found!</div>
+
+    <script>
+
+function changeActive(clickedItem) {
+    // Get all menu items
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    // Remove the 'active' class from all items
+    menuItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add the 'active' class to the clicked item
+    clickedItem.classList.add('active');
+}
+
+
+        const authButton = document.getElementById('authButton');
+        authButton.onclick = function () {
+                    sessionStorage.removeItem('userId');
+                    window.location.href = 'Login.html';
+                };
+                
+
+        async function fetchRecipes(type) {
+            const response = await fetch(`http://localhost:8080/api/recipes/type/${type}
+`);
+            // const response = await fetch("http://localhost:8080/api/recipes/get/all");
+
+            return await response.json();
+        }
+
+        async function fetchImage(imgName) {
+            const response = await fetch(`http://localhost:8080/api/images/get-image/${imgName}`);
+            if (response.ok) {
+                const imageData = await response.blob(); // Get image as Blob
+                return URL.createObjectURL(imageData); // Create a URL for the image
+            } else {
+                console.error('Failed to fetch image:', response.statusText);
+                return 'path/to/default/image.jpg'; // Provide a default image if fetching fails
+            }
+        }
+
+        async function displayRecipes(type) {
+            const recipes = await fetchRecipes(type);
+            const recipeCardContainer = document.getElementById('recipeContainer'); // Fixed ID reference
+            recipeCardContainer.innerHTML = ''; // Clear previous results
+
+            if (recipes.length === 0) {
+                document.getElementById('noResultsMessage').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('noResultsMessage').style.display = 'none';
+
+            for (const recipe of recipes) {
+    const imgUrl = await fetchImage(recipe.thumbnel); // Fetch image using thumbnail name
+
+    // Create a link element for the recipe card
+    const linkElement = document.createElement('a');
+    
+    linkElement.href = `ViewPostPage.html?postId=${recipe.id}`;  // URL with postId as query parameter
+    linkElement.className = 'recipe-link'; // Optional: Add a class for styling
+    linkElement.style.textDecoration = 'none'; // Remove underline from the link (optional)
+    linkElement.style.color = 'inherit'; // Inherit color from parent (optional)
+
+    // Create the recipe card container
+    const recipeCard = document.createElement('div');
+    recipeCard.className = 'recipe-card';
+
+    // Create a string for ingredients
+    const ingredientsList = recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+
+    recipeCard.innerHTML = `
+        <img src="${imgUrl}" alt="${recipe.name}">
+        <h3 style="text-decoration: none;" >${recipe.name}</h3>
+
+    `;
+
+    // Append the recipe card to the link element
+    linkElement.appendChild(recipeCard);
+
+    // Finally, append the link element to the recipeCardContainer
+    recipeCardContainer.appendChild(linkElement);
+}
+        }
+        window.addEventListener("load", (event) => {
+            displayRecipes('Breakfast');
+            if (!(sessionStorage.getItem('userId'))) {
+                window.location.href = 'Login.html';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+

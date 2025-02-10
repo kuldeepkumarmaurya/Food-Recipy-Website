@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-verify {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Admin User Management</h1>
+
+    <div id="users-container">
+        <h2>All Users</h2>
+        <table id="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Verified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users-body">
+                <!-- Users will be inserted here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="user-profile-container">
+        <h2>User Profile</h2>
+        <p><strong>ID:</strong> <span id="profile-id"></span></p>
+        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Bio:</strong> <span id="profile-bio"></span></p>
+        <p><strong>Phone Number:</strong> <span id="profile-phone"></span></p>
+        <p><strong>Verified:</strong> <span id="profile-verified"></span></p>
+    </div>
+
+    <script>
+        // Fetch all users and populate the table
+        function fetchAllUsers() {
+            fetch('http://localhost:8080/api/admin/users')
+                .then(response => response.json())
+                .then(users => {
+                    const usersTableBody = document.getElementById('users-body');
+                    usersTableBody.innerHTML = ''; // Clear any existing rows
+
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                            <td>${user.regId}</td>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.varified ? 'Yes' : 'No'}</td>
+                            <td>
+                                <button class="btn btn-verify" onclick="verifyUser(${user.regId})">Verify</button>
+                                <button class="btn btn-delete" onclick="deleteUser(${user.regId})">Delete</button>
+                                <button class="btn" onclick="fetchUserProfile(${user.regId})">View Profile</button>
+                            </td>
+                        `;
+
+                        usersTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+
+        // Fetch and display user profile by ID
+        function fetchUserProfile(userId) {
+            fetch(`http://localhost:8080/api/admin/user/${userId}`)
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('profile-id').textContent = userId;
+                    document.getElementById('profile-name').textContent = user.name;
+                    document.getElementById('profile-email').textContent = user.email;
+                    document.getElementById('profile-bio').textContent = user.bio;
+                    document.getElementById('profile-phone').textContent = user.phoneNumber;
+                    document.getElementById('profile-verified').textContent = user.verified ? 'Yes' : 'No';
+                })
+                .catch(error => console.error('Error fetching user profile:', error));
+        }
+
+        // Verify a user by ID
+        function verifyUser(userId) {
+            fetch(`http://localhost:8080/api/admin/user/verify/${userId}`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('User verified successfully');
+                    fetchAllUsers(); // Refresh user list
+                }
+            })
+            .catch(error => console.error('Error verifying user:', error));
+        }
+
+        // Delete a user by ID
+        function deleteUser(userId) {
+            fetch(`http://localhost:8080/api/admin/user/${userId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('User deleted successfully');
+                    fetchAllUsers(); // Refresh user list
+                }
+            })
+            .catch(error => console.error('Error deleting user:', error));
+        }
+
+        // Fetch all users on page load
+        document.addEventListener('DOMContentLoaded', fetchAllUsers);
+    </script>
+
+</body>
+</html>

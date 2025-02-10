@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Video Player</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 750px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        h2 {
+            color: #f07c00; /* Orange shade for heading */
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .video-player {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f07c00; /* Orange background for controls */
+            border-radius: 0 0 10px 10px;
+            margin-top: -5px;
+        }
+
+        .controls button, .controls input {
+            background-color: #fff;
+            color: #f07c00;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .controls button:hover {
+            background-color: #e26b00; /* Darker orange on hover */
+            color: #fff;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            margin: 0 10px;
+            height: 8px;
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+            background: linear-gradient(to right, #f07c00 0%, #f07c00 0%, #e1e1e1 0%, #e1e1e1 100%);
+            cursor: pointer;
+        }
+
+        .progress-bar::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #f07c00;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fullscreen-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #f07c00;
+        }
+
+        .fullscreen-btn:hover svg {
+            fill: #fff;
+        }
+
+        .container:before {
+            content: "";
+            background-color: #f07c00;
+            opacity: 0.3;
+            position: absolute;
+            top: -10px;
+            bottom: -10px;
+            left: -10px;
+            right: -10px;
+            z-index: -1;
+            border-radius: 15px;
+            transform: rotate(5deg);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Watch Our Tutorial</h2>
+    <div class="video-player">
+        <video id="tutorialVideo" controls>
+            Your browser does not support the video tag.
+        </video>
+        <div class="controls">
+            <button class="play-btn" id="playPauseBtn">Play</button>
+            <input type="range" id="progressBar" class="progress-bar" value="0" max="100">
+            <button class="volume-control" id="volumeBtn">Mute</button>
+            <button class="fullscreen-btn" id="fullscreenBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 3h-6v2h4v4h2V3zM9 3H3v6h2V5h4V3zm6 18h6v-6h-2v4h-4v2zM5 15H3v6h6v-2H5v-4z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fetch video as Blob and return object URL
+    async function fetchVideo(videoName) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/videos/get-video/${videoName}`);
+            if (response.ok) {
+                const videoData = await response.blob(); // Get video as Blob
+                return URL.createObjectURL(videoData); // Return video URL
+            } else {
+                console.error('Failed to fetch video:', response.statusText);
+                return 'path/to/default/video.mp4'; // Fallback video
+            }
+        } catch (error) {
+            console.error('Error fetching video:', error);
+            return 'path/to/default/video.mp4'; // Fallback video
+        }
+    }
+
+    // Load video dynamically based on query parameter
+    async function loadVideo() {
+        const videoElement = document.getElementById('tutorialVideo');
+        
+        // Extract video file name from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoName = urlParams.get('video');
+        
+        if (videoName) {
+            try {
+                const videoUrl = await fetchVideo(videoName); // Fetch the video URL
+                videoElement.src = videoUrl; // Set the video source dynamically
+            } catch (error) {
+                console.error('Error loading video:', error);
+                videoElement.src = 'path/to/default/video.mp4'; // Fallback video
+            }
+        } else {
+            console.log("No video file specified in URL.");
+            videoElement.src = 'path/to/default/video.mp4'; // Load default/fallback video
+        }
+    }
+
+    // Play/Pause Video
+    function togglePlayPause(video, playPauseBtn) {
+        if (video.paused) {
+            video.play();
+            playPauseBtn.textContent = 'Pause';
+        } else {
+            video.pause();
+            playPauseBtn.textContent = 'Play';
+        }
+    }
+
+    // Update progress bar as video plays
+    function updateProgress(video, progressBar) {
+        const progress = (video.currentTime / video.duration) * 100;
+        progressBar.value = progress;
+        progressBar.style.background = `linear-gradient(to right, #f07c00 ${progress}%, #e1e1e1 ${progress}%)`;
+    }
+
+    // Mute/Unmute Video
+    function toggleMute(video, volumeBtn) {
+        if (video.muted) {
+            video.muted = false;
+            volumeBtn.textContent = 'Mute';
+        } else {
+            video.muted = true;
+            volumeBtn.textContent = 'Unmute';
+        }
+    }
+
+    // Fullscreen Video
+    function toggleFullscreen(video) {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen(); // Safari
+        } else if (video.msRequestFullscreen) {
+            video.msRequestFullscreen(); // IE/Edge
+        }
+    }
+
+    // Set up event listeners and video controls when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('tutorialVideo');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        // Load the video dynamically
+        loadVideo();
+
+        // Play/Pause Button Event Listener
+        playPauseBtn.addEventListener('click', () => togglePlayPause(video, playPauseBtn));
+
+        // Update progress bar while the video is playing
+        video.addEventListener('timeupdate', () => updateProgress(video, progressBar));
+
+        // Seek video when progress bar is clicked
+        progressBar.addEventListener('input', () => {
+            const seekTime = (progressBar.value / 100) * video.duration;
+            video.currentTime = seekTime;
+        });
+
+        // Mute/Unmute Button Event Listener
+        volumeBtn.addEventListener('click', () => toggleMute(video, volumeBtn));
+
+        // Fullscreen Button Event Listener
+        fullscreenBtn.addEventListener('click', () => toggleFullscreen(video));
+    });
+</script>
+
+
+</body>
+</html>
